@@ -5,7 +5,7 @@ import { getMyApplications } from "../services/applicationService";
 const CandidateDashboard = () => {
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,6 @@ const CandidateDashboard = () => {
   const loadApplications = async () => {
     try {
       const data = await getMyApplications();
-
       setApplications(data.applications || []);
     } catch (error) {
       console.log("Failed to load applications:", error);
@@ -27,207 +26,180 @@ const CandidateDashboard = () => {
   };
 
   const pendingCount = applications.filter(
-    (application) =>
-      application.status === "Pending"
+    (application) => application.status === "Pending"
   ).length;
 
   const acceptedCount = applications.filter(
-    (application) =>
-      application.status === "Accepted"
+    (application) => application.status === "Accepted"
   ).length;
 
   const rejectedCount = applications.filter(
-    (application) =>
-      application.status === "Rejected"
+    (application) => application.status === "Rejected"
   ).length;
 
   return (
-    <div
-      style={{
-        maxWidth: "1100px",
-        margin: "40px auto",
-        padding: "20px",
-      }}
-    >
-      {/* Header */}
+    <div style={pageStyle}>
+      {/* ================= HEADER ================= */}
 
-      <div
-        style={{
-          padding: "30px",
-          borderRadius: "12px",
-          background: "#2563eb",
-          color: "white",
-        }}
-      >
-        <h1 style={{ marginTop: 0 }}>
-          Candidate Dashboard
-        </h1>
+      <div style={headerStyle}>
+        <div>
+          <div style={headerBadge}>JOBHUB • CANDIDATE</div>
 
-        <p style={{ marginBottom: 0 }}>
-          Welcome, {user?.fullName || "Candidate"} 👋
-        </p>
+          <h1 style={headerTitle}>Candidate Dashboard</h1>
+
+          <p style={headerText}>
+            Welcome back,{" "}
+            <strong>{user?.fullName || "Candidate"}</strong> 👋
+          </p>
+
+          <p style={headerSubText}>
+            Find great opportunities, manage applications, and track your
+            career progress.
+          </p>
+        </div>
+
+        <div style={headerIcon}>👨‍💻</div>
       </div>
 
-      {/* Application Statistics */}
+      {/* ================= APPLICATION SUMMARY ================= */}
 
-      <h2 style={{ marginTop: "35px" }}>
-        Application Summary
-      </h2>
+      <div style={sectionHeaderStyle}>
+        <div>
+          <h2 style={sectionTitle}>Application Summary</h2>
+          <p style={sectionSubtitle}>
+            Keep track of your job applications.
+          </p>
+        </div>
+      </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "20px",
-          marginTop: "20px",
-        }}
-      >
+      <div style={statsGridStyle}>
         {/* Total */}
 
         <div style={statCardStyle}>
-          <h3>Total Applications</h3>
+          <div style={statIconBlue}>📋</div>
 
-          <div style={statNumberStyle}>
-            {loading ? "..." : applications.length}
+          <div>
+            <p style={statLabel}>Total Applications</p>
+
+            <h2 style={statNumberStyle}>
+              {loading ? "..." : applications.length}
+            </h2>
+
+            <p style={statDescription}>Applications submitted</p>
           </div>
-
-          <p>Applications submitted</p>
         </div>
 
         {/* Pending */}
 
         <div style={statCardStyle}>
-          <h3>🟡 Pending</h3>
+          <div style={statIconYellow}>⏳</div>
 
-          <div style={statNumberStyle}>
-            {loading ? "..." : pendingCount}
+          <div>
+            <p style={statLabel}>Pending</p>
+
+            <h2 style={statNumberStyle}>
+              {loading ? "..." : pendingCount}
+            </h2>
+
+            <p style={statDescription}>Waiting for recruiter</p>
           </div>
-
-          <p>Waiting for recruiter</p>
         </div>
 
         {/* Accepted */}
 
         <div style={statCardStyle}>
-          <h3>🟢 Accepted</h3>
+          <div style={statIconGreen}>✓</div>
 
-          <div style={statNumberStyle}>
-            {loading ? "..." : acceptedCount}
+          <div>
+            <p style={statLabel}>Accepted</p>
+
+            <h2 style={statNumberStyle}>
+              {loading ? "..." : acceptedCount}
+            </h2>
+
+            <p style={statDescription}>Applications accepted</p>
           </div>
-
-          <p>Applications accepted</p>
         </div>
 
         {/* Rejected */}
 
         <div style={statCardStyle}>
-          <h3>🔴 Rejected</h3>
+          <div style={statIconRed}>✕</div>
 
-          <div style={statNumberStyle}>
-            {loading ? "..." : rejectedCount}
+          <div>
+            <p style={statLabel}>Rejected</p>
+
+            <h2 style={statNumberStyle}>
+              {loading ? "..." : rejectedCount}
+            </h2>
+
+            <p style={statDescription}>Applications rejected</p>
           </div>
-
-          <p>Applications rejected</p>
         </div>
       </div>
 
-      {/* Main Actions */}
+      {/* ================= QUICK ACTIONS ================= */}
 
-      <h2 style={{ marginTop: "40px" }}>
-        Quick Actions
-      </h2>
+      <div style={{ marginTop: "45px" }}>
+        <div style={sectionHeaderStyle}>
+          <div>
+            <h2 style={sectionTitle}>Quick Actions</h2>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: "20px",
-          marginTop: "20px",
-        }}
-      >
-        {/* Search Jobs */}
+            <p style={sectionSubtitle}>
+              Everything you need for your job search.
+            </p>
+          </div>
+        </div>
 
-        <div style={cardStyle}>
-          <h2>🔎 Search Jobs</h2>
+        <div style={actionsGridStyle}>
+          {/* Search Jobs */}
 
-          <p>
-            Find jobs based on title, location,
-            experience and salary.
-          </p>
-
-          <button
+          <ActionCard
+            icon="🔎"
+            title="Search Jobs"
+            description="Find jobs based on title, location, experience and salary."
+            buttonText="Browse Jobs"
             onClick={() => navigate("/jobs")}
-            style={buttonStyle}
-          >
-            Browse Jobs
-          </button>
-        </div>
+          />
 
-        {/* My Applications */}
+          {/* My Applications */}
 
-        <div style={cardStyle}>
-          <h2>📋 My Applications</h2>
+          <ActionCard
+            icon="📋"
+            title="My Applications"
+            description="Track all your applications and their current status."
+            buttonText="View Applications"
+            onClick={() => navigate("/my-applications")}
+          />
 
-          <p>
-            Track all your applications and their
-            current status.
-          </p>
+          {/* Profile */}
 
-          <button
-            onClick={() =>
-              navigate("/my-applications")
-            }
-            style={buttonStyle}
-          >
-            View Applications
-          </button>
-        </div>
-
-        {/* Profile */}
-
-        <div style={cardStyle}>
-          <h2>👤 My Profile</h2>
-
-          <p>
-            Update your personal information,
-            skills, profile photo and resume.
-          </p>
-
-          <button
+          <ActionCard
+            icon="👤"
+            title="My Profile"
+            description="Update your personal information, skills, profile photo and resume."
+            buttonText="View Profile"
             onClick={() => navigate("/profile")}
-            style={buttonStyle}
-          >
-            View Profile
-          </button>
+          />
         </div>
       </div>
 
-      {/* Recent Applications */}
+      {/* ================= RECENT APPLICATIONS ================= */}
 
-      <div style={{ marginTop: "40px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <h2>Recent Applications</h2>
+      <div style={{ marginTop: "45px" }}>
+        <div style={recentHeaderStyle}>
+          <div>
+            <h2 style={sectionTitle}>Recent Applications</h2>
+
+            <p style={sectionSubtitle}>
+              Your latest job applications.
+            </p>
+          </div>
 
           {applications.length > 0 && (
             <button
-              onClick={() =>
-                navigate("/my-applications")
-              }
-              style={{
-                background: "none",
-                border: "none",
-                color: "#2563eb",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
+              onClick={() => navigate("/my-applications")}
+              style={viewAllButtonStyle}
             >
               View All →
             </button>
@@ -235,166 +207,120 @@ const CandidateDashboard = () => {
         </div>
 
         {loading ? (
-          <p>Loading applications...</p>
+          <div style={emptyCardStyle}>
+            <div style={loadingIcon}>⏳</div>
+            <h3>Loading applications...</h3>
+          </div>
         ) : applications.length === 0 ? (
-          <div
-            style={{
-              padding: "30px",
-              border: "1px solid #ddd",
-              borderRadius: "10px",
-              textAlign: "center",
-            }}
-          >
-            <h3>No applications yet</h3>
+          <div style={emptyCardStyle}>
+            <div style={emptyIcon}>📭</div>
 
-            <p style={{ color: "#666" }}>
-              Start applying for jobs to see them
-              here.
+            <h3 style={{ marginBottom: "8px" }}>
+              No applications yet
+            </h3>
+
+            <p style={emptyTextStyle}>
+              Start applying for jobs to see your applications here.
             </p>
 
             <button
               onClick={() => navigate("/jobs")}
-              style={buttonStyle}
+              style={primaryButtonStyle}
             >
               Browse Jobs
             </button>
           </div>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gap: "15px",
-            }}
-          >
-            {applications
-              .slice(0, 3)
-              .map((application) => {
-                const job = application.job;
+          <div style={applicationsGridStyle}>
+            {applications.slice(0, 3).map((application) => {
+              const job = application.job;
 
-                return (
-                  <div
-                    key={application._id}
-                    style={{
-                      padding: "20px",
-                      border: "1px solid #ddd",
-                      borderRadius: "10px",
-                      background: "white",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent:
-                          "space-between",
-                        alignItems: "center",
-                        gap: "15px",
-                      }}
-                    >
-                      <div>
-                        <h3
-                          style={{
-                            marginTop: 0,
-                            marginBottom: "5px",
-                          }}
-                        >
-                          {job?.title ||
-                            "Job unavailable"}
-                        </h3>
+              return (
+                <div
+                  key={application._id}
+                  style={applicationCardStyle}
+                >
+                  <div style={applicationTopStyle}>
+                    <div>
+                      <div style={jobIcon}>💼</div>
 
-                        <p
-                          style={{
-                            margin: 0,
-                            color: "#666",
-                          }}
-                        >
-                          🏢{" "}
-                          {job?.company?.name ||
-                            "Company"}
-                        </p>
+                      <h3 style={jobTitleStyle}>
+                        {job?.title || "Job unavailable"}
+                      </h3>
 
-                        <p
-                          style={{
-                            marginBottom: 0,
-                            color: "#666",
-                          }}
-                        >
-                          📍{" "}
-                          {job?.location ||
-                            "Location unavailable"}
-                        </p>
-                      </div>
+                      <p style={companyTextStyle}>
+                        🏢 {job?.company?.name || "Company"}
+                      </p>
 
-                      <span
-                        style={{
-                          ...getStatusStyle(
-                            application.status
-                          ),
-                          padding: "8px 14px",
-                          borderRadius: "20px",
-                          fontWeight: "bold",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {application.status}
-                      </span>
+                      <p style={locationTextStyle}>
+                        📍 {job?.location || "Location unavailable"}
+                      </p>
                     </div>
 
-                    <button
-                      onClick={() =>
-                        navigate(
-                          `/jobs/${job?._id}`
-                        )
-                      }
-                      disabled={!job?._id}
+                    <span
                       style={{
-                        marginTop: "15px",
-                        padding: "9px 18px",
-                        background: "#2563eb",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "6px",
-                        cursor: "pointer",
+                        ...getStatusStyle(application.status),
+                        padding: "8px 14px",
+                        borderRadius: "20px",
+                        fontWeight: "700",
+                        fontSize: "13px",
+                        whiteSpace: "nowrap",
                       }}
                     >
-                      View Job
-                    </button>
+                      {application.status}
+                    </span>
                   </div>
-                );
-              })}
+
+                  <button
+                    onClick={() =>
+                      navigate(`/jobs/${job?._id}`)
+                    }
+                    disabled={!job?._id}
+                    style={{
+                      ...secondaryButtonStyle,
+                      opacity: !job?._id ? 0.5 : 1,
+                    }}
+                  >
+                    View Job →
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
 
-      {/* Candidate Flow */}
+      {/* ================= HOW JOBHUB WORKS ================= */}
 
-      <div
-        style={{
-          marginTop: "40px",
-          padding: "25px",
-          border: "1px solid #ddd",
-          borderRadius: "12px",
-          background: "#f9fafb",
-        }}
-      >
-        <h2>How JobHub Works</h2>
+      <div style={flowCardStyle}>
+        <div>
+          <div style={headerBadgeDark}>JOBHUB PROCESS</div>
 
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "15px",
-            marginTop: "20px",
-          }}
-        >
-          <Step number="1" text="Search Jobs" />
-          <Step number="2" text="View Job" />
-          <Step number="3" text="Apply" />
+          <h2 style={{ margin: "8px 0" }}>
+            How JobHub Works
+          </h2>
+
+          <p style={{ color: "#64748b" }}>
+            Follow these simple steps to find your next opportunity.
+          </p>
+        </div>
+
+        <div style={stepsGridStyle}>
+          <Step number="1" icon="🔎" text="Search Jobs" />
+
+          <Step number="2" icon="👀" text="View Job" />
+
+          <Step number="3" icon="📤" text="Apply" />
+
           <Step
             number="4"
+            icon="📋"
             text="Track Application"
           />
+
           <Step
             number="5"
+            icon="🎯"
             text="Get Decision"
           />
         </div>
@@ -402,6 +328,41 @@ const CandidateDashboard = () => {
     </div>
   );
 };
+
+/* =========================================================
+   ACTION CARD
+========================================================= */
+
+const ActionCard = ({
+  icon,
+  title,
+  description,
+  buttonText,
+  onClick,
+}) => {
+  return (
+    <div style={actionCardStyle}>
+      <div style={actionIconStyle}>{icon}</div>
+
+      <h2 style={actionTitleStyle}>{title}</h2>
+
+      <p style={actionDescriptionStyle}>
+        {description}
+      </p>
+
+      <button
+        onClick={onClick}
+        style={primaryButtonStyle}
+      >
+        {buttonText} →
+      </button>
+    </div>
+  );
+};
+
+/* =========================================================
+   STATUS STYLE
+========================================================= */
 
 const getStatusStyle = (status) => {
   if (status === "Accepted") {
@@ -424,51 +385,393 @@ const getStatusStyle = (status) => {
   };
 };
 
-const Step = ({ number, text }) => {
+/* =========================================================
+   STEP
+========================================================= */
+
+const Step = ({ number, icon, text }) => {
   return (
-    <div
-      style={{
-        padding: "15px 20px",
-        background: "white",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        fontWeight: "bold",
-      }}
-    >
-      {number}. {text}
+    <div style={stepStyle}>
+      <div style={stepNumberStyle}>{number}</div>
+
+      <div style={stepIconStyle}>{icon}</div>
+
+      <div style={stepTextStyle}>{text}</div>
     </div>
   );
 };
 
-const cardStyle = {
-  border: "1px solid #ddd",
-  borderRadius: "12px",
-  padding: "25px",
-  background: "white",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+/* =========================================================
+   PAGE
+========================================================= */
+
+const pageStyle = {
+  maxWidth: "1100px",
+  margin: "0 auto",
+  padding: "40px 20px 60px",
+  background: "#f8fafc",
 };
 
-const buttonStyle = {
+/* =========================================================
+   HEADER
+========================================================= */
+
+const headerStyle = {
+  padding: "35px",
+  borderRadius: "18px",
+  background:
+    "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+  color: "white",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "25px",
+  boxShadow: "0 10px 30px rgba(37,99,235,0.20)",
+};
+
+const headerBadge = {
+  display: "inline-block",
+  padding: "6px 12px",
+  borderRadius: "20px",
+  background: "rgba(255,255,255,0.15)",
+  fontSize: "12px",
+  fontWeight: "700",
+  letterSpacing: "0.5px",
+};
+
+const headerBadgeDark = {
+  display: "inline-block",
+  padding: "6px 12px",
+  borderRadius: "20px",
+  background: "#eff6ff",
+  color: "#2563eb",
+  fontSize: "12px",
+  fontWeight: "700",
+  letterSpacing: "0.5px",
+};
+
+const headerTitle = {
+  margin: "15px 0 8px",
+  fontSize: "32px",
+};
+
+const headerText = {
+  margin: 0,
+  fontSize: "18px",
+};
+
+const headerSubText = {
+  marginTop: "12px",
+  marginBottom: 0,
+  color: "#dbeafe",
+};
+
+const headerIcon = {
+  width: "80px",
+  height: "80px",
+  borderRadius: "20px",
+  background: "rgba(255,255,255,0.15)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "42px",
+};
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+const sectionHeaderStyle = {
+  marginTop: "30px",
+};
+
+const sectionTitle = {
+  margin: 0,
+  fontSize: "24px",
+  color: "#0f172a",
+};
+
+const sectionSubtitle = {
+  marginTop: "6px",
+  color: "#64748b",
+};
+
+/* =========================================================
+   STATS
+========================================================= */
+
+const statsGridStyle = {
+  display: "grid",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(210px, 1fr))",
+  gap: "20px",
+  marginTop: "20px",
+};
+
+const statCardStyle = {
+  padding: "22px",
+  background: "white",
+  border: "1px solid #e2e8f0",
+  borderRadius: "15px",
+  display: "flex",
+  alignItems: "center",
+  gap: "16px",
+  boxShadow: "0 4px 12px rgba(15,23,42,0.04)",
+};
+
+const statIconBase = {
+  width: "50px",
+  height: "50px",
+  borderRadius: "12px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "22px",
+  flexShrink: 0,
+};
+
+const statIconBlue = {
+  ...statIconBase,
+  background: "#eff6ff",
+};
+
+const statIconYellow = {
+  ...statIconBase,
+  background: "#fef3c7",
+};
+
+const statIconGreen = {
+  ...statIconBase,
+  background: "#dcfce7",
+};
+
+const statIconRed = {
+  ...statIconBase,
+  background: "#fee2e2",
+};
+
+const statLabel = {
+  margin: 0,
+  color: "#64748b",
+  fontSize: "14px",
+  fontWeight: "600",
+};
+
+const statNumberStyle = {
+  margin: "4px 0",
+  fontSize: "30px",
+  color: "#0f172a",
+};
+
+const statDescription = {
+  margin: 0,
+  color: "#94a3b8",
+  fontSize: "13px",
+};
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+const actionsGridStyle = {
+  display: "grid",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(250px, 1fr))",
+  gap: "20px",
+  marginTop: "20px",
+};
+
+const actionCardStyle = {
+  padding: "25px",
+  background: "white",
+  border: "1px solid #e2e8f0",
+  borderRadius: "15px",
+  boxShadow: "0 4px 12px rgba(15,23,42,0.04)",
+};
+
+const actionIconStyle = {
+  width: "52px",
+  height: "52px",
+  borderRadius: "13px",
+  background: "#eff6ff",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "25px",
+};
+
+const actionTitleStyle = {
+  margin: "18px 0 8px",
+  color: "#0f172a",
+};
+
+const actionDescriptionStyle = {
+  color: "#64748b",
+  lineHeight: "1.6",
+  minHeight: "50px",
+};
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+const primaryButtonStyle = {
   marginTop: "15px",
   padding: "11px 20px",
   background: "#2563eb",
   color: "white",
   border: "none",
-  borderRadius: "6px",
+  borderRadius: "8px",
   cursor: "pointer",
+  fontWeight: "600",
 };
 
-const statCardStyle = {
-  border: "1px solid #ddd",
-  borderRadius: "12px",
-  padding: "20px",
+const secondaryButtonStyle = {
+  marginTop: "18px",
+  padding: "10px 18px",
+  background: "#eff6ff",
+  color: "#2563eb",
+  border: "1px solid #bfdbfe",
+  borderRadius: "8px",
+  cursor: "pointer",
+  fontWeight: "600",
+};
+
+const viewAllButtonStyle = {
+  background: "transparent",
+  border: "none",
+  color: "#2563eb",
+  cursor: "pointer",
+  fontWeight: "700",
+};
+
+/* =========================================================
+   APPLICATIONS
+========================================================= */
+
+const recentHeaderStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "15px",
+};
+
+const applicationsGridStyle = {
+  display: "grid",
+  gap: "15px",
+  marginTop: "20px",
+};
+
+const applicationCardStyle = {
+  padding: "22px",
   background: "white",
+  border: "1px solid #e2e8f0",
+  borderRadius: "15px",
+  boxShadow: "0 4px 12px rgba(15,23,42,0.04)",
 };
 
-const statNumberStyle = {
-  fontSize: "32px",
-  fontWeight: "bold",
-  marginTop: "10px",
+const applicationTopStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  gap: "20px",
+};
+
+const jobIcon = {
+  fontSize: "20px",
+  marginBottom: "8px",
+};
+
+const jobTitleStyle = {
+  margin: 0,
+  color: "#0f172a",
+};
+
+const companyTextStyle = {
+  margin: "8px 0 4px",
+  color: "#475569",
+};
+
+const locationTextStyle = {
+  margin: 0,
+  color: "#64748b",
+};
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+const emptyCardStyle = {
+  marginTop: "20px",
+  padding: "50px 25px",
+  background: "white",
+  border: "1px solid #e2e8f0",
+  borderRadius: "15px",
+  textAlign: "center",
+};
+
+const emptyIcon = {
+  fontSize: "42px",
+};
+
+const loadingIcon = {
+  fontSize: "35px",
+};
+
+const emptyTextStyle = {
+  color: "#64748b",
+};
+
+/* =========================================================
+   JOBHUB FLOW
+========================================================= */
+
+const flowCardStyle = {
+  marginTop: "45px",
+  padding: "28px",
+  background: "white",
+  border: "1px solid #e2e8f0",
+  borderRadius: "18px",
+  boxShadow: "0 4px 12px rgba(15,23,42,0.04)",
+};
+
+const stepsGridStyle = {
+  display: "grid",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(150px, 1fr))",
+  gap: "15px",
+  marginTop: "25px",
+};
+
+const stepStyle = {
+  padding: "18px",
+  background: "#f8fafc",
+  border: "1px solid #e2e8f0",
+  borderRadius: "12px",
+  textAlign: "center",
+};
+
+const stepNumberStyle = {
+  width: "30px",
+  height: "30px",
+  margin: "0 auto 10px",
+  borderRadius: "50%",
+  background: "#2563eb",
+  color: "white",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: "700",
+};
+
+const stepIconStyle = {
+  fontSize: "24px",
+  marginBottom: "8px",
+};
+
+const stepTextStyle = {
+  fontWeight: "600",
+  color: "#334155",
 };
 
 export default CandidateDashboard;
