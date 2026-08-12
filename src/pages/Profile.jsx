@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/api";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -24,23 +24,15 @@ const Profile = () => {
   // Update profile
   const [updating, setUpdating] = useState(false);
 
-  // JWT token
-  const token = localStorage.getItem("token");
-
   // ==========================================
   // GET PROFILE
   // ==========================================
 
   const loadProfile = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/auth/profile",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      setLoading(true);
+
+      const response = await API.get("/auth/profile");
 
       const userData = response.data.user;
 
@@ -55,7 +47,7 @@ const Profile = () => {
           : "",
       });
     } catch (error) {
-      console.log(error);
+      console.log("Load profile error:", error);
 
       alert(
         error.response?.data?.message ||
@@ -66,7 +58,10 @@ const Profile = () => {
     }
   };
 
-  // Load profile when page opens
+  // ==========================================
+  // LOAD PROFILE WHEN PAGE OPENS
+  // ==========================================
+
   useEffect(() => {
     loadProfile();
   }, []);
@@ -92,29 +87,29 @@ const Profile = () => {
     try {
       setUpdating(true);
 
-      const response = await axios.put(
-        "http://localhost:5000/api/auth/profile",
-        {
-          fullName: formData.fullName,
-          phone: formData.phone,
-          bio: formData.bio,
-          skills: formData.skills,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await API.put("/auth/profile", {
+        fullName: formData.fullName,
+        phone: formData.phone,
+        bio: formData.bio,
+        skills: formData.skills,
+      });
 
       setUser(response.data.user);
 
+      setFormData({
+        fullName: response.data.user.fullName || "",
+        phone: response.data.user.phone || "",
+        bio: response.data.user.bio || "",
+        skills: response.data.user.skills
+          ? response.data.user.skills.join(", ")
+          : "",
+      });
+
       alert("Profile updated successfully");
 
-      // Reload profile
       await loadProfile();
     } catch (error) {
-      console.log(error);
+      console.log("Profile update error:", error);
 
       alert(
         error.response?.data?.message ||
@@ -159,14 +154,9 @@ const Profile = () => {
 
       data.append("profilePhoto", selectedFile);
 
-      const response = await axios.put(
-        "http://localhost:5000/api/auth/profile-photo",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await API.put(
+        "/auth/profile-photo",
+        data
       );
 
       alert("Profile photo uploaded successfully");
@@ -178,7 +168,7 @@ const Profile = () => {
 
       setSelectedFile(null);
     } catch (error) {
-      console.log(error);
+      console.log("Profile photo upload error:", error);
 
       alert(
         error.response?.data?.message ||
@@ -223,14 +213,9 @@ const Profile = () => {
 
       data.append("resume", resumeFile);
 
-      const response = await axios.put(
-        "http://localhost:5000/api/auth/resume",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await API.put(
+        "/auth/resume",
+        data
       );
 
       alert("Resume uploaded successfully");
@@ -242,7 +227,7 @@ const Profile = () => {
 
       setResumeFile(null);
     } catch (error) {
-      console.log(error);
+      console.log("Resume upload error:", error);
 
       alert(
         error.response?.data?.message ||
@@ -260,7 +245,11 @@ const Profile = () => {
   if (loading) {
     return (
       <div style={pageStyle}>
-        <h2>Loading Profile...</h2>
+        <div style={loadingCardStyle}>
+          <div style={loadingIconStyle}>👤</div>
+          <h2>Loading Profile...</h2>
+          <p>Please wait while we load your profile.</p>
+        </div>
       </div>
     );
   }
@@ -272,7 +261,23 @@ const Profile = () => {
   if (!user) {
     return (
       <div style={pageStyle}>
-        <h2>Unable to load profile</h2>
+        <div style={errorCardStyle}>
+          <div style={errorIconStyle}>⚠️</div>
+
+          <h2>Unable to load profile</h2>
+
+          <p>
+            We couldn't load your profile information.
+          </p>
+
+          <button
+            type="button"
+            onClick={loadProfile}
+            style={blueButtonStyle}
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
@@ -285,15 +290,25 @@ const Profile = () => {
     <div style={pageStyle}>
       <div style={profileCardStyle}>
 
-        <h1 style={{ textAlign: "center" }}>
-          My Profile
-        </h1>
+        {/* HEADER */}
+
+        <div style={headerStyle}>
+          <h1 style={titleStyle}>My Profile</h1>
+
+          <p style={subtitleStyle}>
+            Manage your personal information, profile photo
+            and resume.
+          </p>
+        </div>
 
         {/* ======================================
             PROFILE PHOTO
         ====================================== */}
 
         <div style={photoSectionStyle}>
+          <h2 style={sectionTitleStyle}>
+            Profile Photo
+          </h2>
 
           {user.profilePhoto ? (
             <img
@@ -307,16 +322,17 @@ const Profile = () => {
             </div>
           )}
 
-          <div style={{ marginTop: "20px" }}>
+          <div style={fileInputWrapperStyle}>
             <input
               type="file"
               accept="image/*"
               onChange={handleFileChange}
+              style={fileInputStyle}
             />
           </div>
 
           {selectedFile && (
-            <p>
+            <p style={selectedFileStyle}>
               Selected:{" "}
               <strong>{selectedFile.name}</strong>
             </p>
@@ -326,11 +342,14 @@ const Profile = () => {
             type="button"
             onClick={handleUploadPhoto}
             disabled={uploading}
-            style={blueButtonStyle}
+            style={{
+              ...blueButtonStyle,
+              opacity: uploading ? 0.7 : 1,
+            }}
           >
             {uploading
               ? "Uploading..."
-              : "Upload Photo"}
+              : "📷 Upload Photo"}
           </button>
         </div>
 
@@ -339,48 +358,66 @@ const Profile = () => {
         ====================================== */}
 
         <div style={resumeBoxStyle}>
+          <div style={resumeHeaderStyle}>
+            <div>
+              <h2 style={sectionTitleStyle}>
+                Resume
+              </h2>
 
-          <h2>Resume</h2>
+              <p style={sectionDescriptionStyle}>
+                Upload your latest resume in PDF format.
+              </p>
+            </div>
+
+            <div style={resumeIconStyle}>
+              📄
+            </div>
+          </div>
 
           {user.resume ? (
-            <div>
+            <div style={resumeUploadedStyle}>
+              <div>
+                <strong>
+                  Resume uploaded successfully ✅
+                </strong>
 
-              <p>
-                Resume uploaded successfully ✅
-              </p>
+                <p style={{ margin: "5px 0 0" }}>
+                  Your resume is ready to view.
+                </p>
+              </div>
 
               <a
                 href={user.resume}
                 target="_blank"
                 rel="noopener noreferrer"
+                style={{ textDecoration: "none" }}
               >
                 <button
                   type="button"
                   style={blueButtonStyle}
                 >
-                  View Resume
+                  👁 View Resume
                 </button>
               </a>
-
             </div>
           ) : (
-            <p>
-              No resume uploaded
-            </p>
+            <div style={noResumeStyle}>
+              <span>📄</span>
+              <span>No resume uploaded</span>
+            </div>
           )}
 
-          <div style={{ marginTop: "20px" }}>
-
+          <div style={fileInputWrapperStyle}>
             <input
               type="file"
               accept=".pdf,application/pdf"
               onChange={handleResumeChange}
+              style={fileInputStyle}
             />
-
           </div>
 
           {resumeFile && (
-            <p>
+            <p style={selectedFileStyle}>
               Selected:{" "}
               <strong>{resumeFile.name}</strong>
             </p>
@@ -390,13 +427,15 @@ const Profile = () => {
             type="button"
             onClick={handleUploadResume}
             disabled={resumeUploading}
-            style={greenButtonStyle}
+            style={{
+              ...greenButtonStyle,
+              opacity: resumeUploading ? 0.7 : 1,
+            }}
           >
             {resumeUploading
               ? "Uploading..."
-              : "Upload Resume"}
+              : "📤 Upload Resume"}
           </button>
-
         </div>
 
         {/* ======================================
@@ -404,12 +443,19 @@ const Profile = () => {
         ====================================== */}
 
         <form onSubmit={handleUpdateProfile}>
+          <div style={sectionHeaderStyle}>
+            <h2 style={sectionTitleStyle}>
+              Personal Information
+            </h2>
 
-          <h2>Personal Information</h2>
+            <p style={sectionDescriptionStyle}>
+              Keep your information up to date.
+            </p>
+          </div>
 
           {/* Full Name */}
 
-          <label>
+          <label style={labelStyle}>
             Full Name
           </label>
 
@@ -418,28 +464,31 @@ const Profile = () => {
             name="fullName"
             value={formData.fullName}
             onChange={handleChange}
+            placeholder="Enter your full name"
             style={inputStyle}
           />
 
           {/* Email */}
 
-          <label>
+          <label style={labelStyle}>
             Email
           </label>
 
           <input
             type="email"
-            value={user.email}
+            value={user.email || ""}
             disabled
             style={{
               ...inputStyle,
               background: "#f3f4f6",
+              color: "#6b7280",
+              cursor: "not-allowed",
             }}
           />
 
           {/* Phone */}
 
-          <label>
+          <label style={labelStyle}>
             Phone
           </label>
 
@@ -454,7 +503,7 @@ const Profile = () => {
 
           {/* Bio */}
 
-          <label>
+          <label style={labelStyle}>
             Bio
           </label>
 
@@ -462,14 +511,17 @@ const Profile = () => {
             name="bio"
             value={formData.bio}
             onChange={handleChange}
-            rows="4"
+            rows="5"
             placeholder="Tell us about yourself"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              resize: "vertical",
+            }}
           />
 
           {/* Skills */}
 
-          <label>
+          <label style={labelStyle}>
             Skills
           </label>
 
@@ -482,20 +534,28 @@ const Profile = () => {
             style={inputStyle}
           />
 
+          <p style={skillsHintStyle}>
+            Separate multiple skills with commas.
+          </p>
+
           {/* Update Button */}
 
           <button
             type="submit"
             disabled={updating}
-            style={greenButtonStyle}
+            style={{
+              ...greenButtonStyle,
+              width: "100%",
+              padding: "13px 20px",
+              fontSize: "16px",
+              opacity: updating ? 0.7 : 1,
+            }}
           >
             {updating
-              ? "Updating..."
-              : "Update Profile"}
+              ? "Updating Profile..."
+              : "✓ Update Profile"}
           </button>
-
         </form>
-
       </div>
     </div>
   );
@@ -508,24 +568,66 @@ const Profile = () => {
 const pageStyle = {
   minHeight: "100vh",
   padding: "40px 20px",
-  background: "#f5f7fb",
+  background:
+    "linear-gradient(135deg, #f5f7fb 0%, #eef2ff 100%)",
   boxSizing: "border-box",
 };
 
 const profileCardStyle = {
-  maxWidth: "700px",
+  maxWidth: "750px",
   margin: "0 auto",
-  padding: "30px",
-  background: "white",
-  border: "1px solid #ddd",
-  borderRadius: "12px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+  padding: "35px",
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  borderRadius: "18px",
+  boxShadow:
+    "0 10px 30px rgba(0,0,0,0.08)",
+  boxSizing: "border-box",
+};
+
+const headerStyle = {
+  textAlign: "center",
+  marginBottom: "30px",
+};
+
+const titleStyle = {
+  margin: 0,
+  fontSize: "32px",
+  fontWeight: "700",
+  color: "#111827",
+};
+
+const subtitleStyle = {
+  marginTop: "8px",
+  color: "#6b7280",
+  fontSize: "15px",
+};
+
+const sectionTitleStyle = {
+  margin: 0,
+  color: "#111827",
+  fontSize: "21px",
+  fontWeight: "650",
+};
+
+const sectionDescriptionStyle = {
+  margin: "6px 0 0",
+  color: "#6b7280",
+  fontSize: "14px",
+};
+
+const sectionHeaderStyle = {
+  marginBottom: "20px",
 };
 
 const photoSectionStyle = {
   textAlign: "center",
-  marginTop: "25px",
+  marginTop: "20px",
   marginBottom: "30px",
+  padding: "25px",
+  background: "#f9fafb",
+  border: "1px solid #e5e7eb",
+  borderRadius: "14px",
 };
 
 const profileImageStyle = {
@@ -533,39 +635,117 @@ const profileImageStyle = {
   height: "150px",
   borderRadius: "50%",
   objectFit: "cover",
-  border: "3px solid #ddd",
+  border: "4px solid #ffffff",
+  boxShadow:
+    "0 5px 18px rgba(0,0,0,0.15)",
 };
 
 const defaultProfileStyle = {
   width: "150px",
   height: "150px",
   borderRadius: "50%",
-  background: "#eee",
+  background:
+    "linear-gradient(135deg, #dbeafe, #e0e7ff)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   margin: "auto",
   fontSize: "60px",
+  border: "4px solid #ffffff",
+  boxShadow:
+    "0 5px 18px rgba(0,0,0,0.1)",
+};
+
+const fileInputWrapperStyle = {
+  marginTop: "20px",
+  padding: "10px",
+  background: "#ffffff",
+  borderRadius: "8px",
+  border: "1px dashed #cbd5e1",
+};
+
+const fileInputStyle = {
+  width: "100%",
+  fontSize: "14px",
+};
+
+const selectedFileStyle = {
+  color: "#374151",
+  fontSize: "14px",
+  marginTop: "10px",
 };
 
 const resumeBoxStyle = {
   marginTop: "30px",
   marginBottom: "30px",
-  padding: "20px",
-  border: "1px solid #ddd",
+  padding: "25px",
+  border: "1px solid #dbeafe",
+  borderRadius: "14px",
+  background:
+    "linear-gradient(135deg, #f8fbff, #eff6ff)",
+};
+
+const resumeHeaderStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "15px",
+  marginBottom: "20px",
+};
+
+const resumeIconStyle = {
+  fontSize: "35px",
+};
+
+const resumeUploadedStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "15px",
+  flexWrap: "wrap",
+  padding: "15px",
+  background: "#ecfdf5",
+  border: "1px solid #bbf7d0",
   borderRadius: "10px",
-  background: "#fafafa",
+  color: "#166534",
+};
+
+const noResumeStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+  padding: "15px",
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  borderRadius: "10px",
+  color: "#6b7280",
+};
+
+const labelStyle = {
+  display: "block",
+  marginBottom: "7px",
+  color: "#374151",
+  fontWeight: "600",
+  fontSize: "14px",
 };
 
 const inputStyle = {
   width: "100%",
-  padding: "11px",
-  marginTop: "7px",
+  padding: "12px 14px",
   marginBottom: "18px",
-  border: "1px solid #ccc",
-  borderRadius: "6px",
+  border: "1px solid #d1d5db",
+  borderRadius: "8px",
   boxSizing: "border-box",
   fontSize: "15px",
+  outline: "none",
+  background: "#ffffff",
+};
+
+const skillsHintStyle = {
+  marginTop: "-10px",
+  marginBottom: "18px",
+  color: "#6b7280",
+  fontSize: "12px",
 };
 
 const blueButtonStyle = {
@@ -574,8 +754,9 @@ const blueButtonStyle = {
   background: "#2563eb",
   color: "white",
   border: "none",
-  borderRadius: "6px",
+  borderRadius: "8px",
   cursor: "pointer",
+  fontWeight: "600",
 };
 
 const greenButtonStyle = {
@@ -584,8 +765,41 @@ const greenButtonStyle = {
   background: "#16a34a",
   color: "white",
   border: "none",
-  borderRadius: "6px",
+  borderRadius: "8px",
   cursor: "pointer",
+  fontWeight: "600",
+};
+
+const loadingCardStyle = {
+  maxWidth: "500px",
+  margin: "100px auto",
+  padding: "40px",
+  textAlign: "center",
+  background: "#ffffff",
+  borderRadius: "16px",
+  boxShadow:
+    "0 10px 30px rgba(0,0,0,0.08)",
+};
+
+const loadingIconStyle = {
+  fontSize: "50px",
+  marginBottom: "15px",
+};
+
+const errorCardStyle = {
+  maxWidth: "500px",
+  margin: "100px auto",
+  padding: "40px",
+  textAlign: "center",
+  background: "#ffffff",
+  borderRadius: "16px",
+  boxShadow:
+    "0 10px 30px rgba(0,0,0,0.08)",
+};
+
+const errorIconStyle = {
+  fontSize: "45px",
+  marginBottom: "10px",
 };
 
 export default Profile;
