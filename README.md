@@ -1,70 +1,308 @@
-# Getting Started with Create React App
+# JobHub — Full Stack Job Portal
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack job portal built with the **MERN stack** that connects candidates, recruiters, and administrators through a complete job-management and application platform.
 
-## Available Scripts
+## 🚀 Live Demo
 
-In the project directory, you can run:
+**Frontend:**
+https://jobhub-frontend-sable.vercel.app/
 
-### `npm start`
+**Backend API:**
+https://jobhub-backend-46sj.onrender.com/
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📂 GitHub Repositories
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**Frontend:**
+https://github.com/sadulakarthikeyreddy/Jobhub-frontend
 
-### `npm test`
+**Backend:**
+https://github.com/sadulakarthikeyreddy/Jobhub-backend
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## ✨ Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 👤 Candidate
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* User registration and login
+* JWT-based authentication
+* Candidate profile management
+* Resume upload
+* Browse available jobs
+* View detailed job information
+* Apply for jobs
+* Track submitted applications
+* Protected candidate routes
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 🏢 Recruiter
 
-### `npm run eject`
+* Recruiter authentication
+* Create and manage companies
+* Create job postings
+* Edit and manage jobs
+* View posted jobs
+* View job applicants
+* Review candidate applications and resumes
+* Protected recruiter routes
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 👑 Admin
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* Admin authentication
+* Admin dashboard
+* Manage users
+* Manage jobs
+* Manage applications
+* Administrative controls and protected routes
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 📄 Resume & Image Upload
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+* Resume upload using Cloudinary
+* Profile/company image upload
+* PDF resume support
+* Cloudinary-based media storage
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🛠️ Tech Stack
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Frontend
 
-### Code Splitting
+* React.js
+* React Router
+* Axios
+* JavaScript
+* HTML5
+* CSS3
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Backend
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JWT Authentication
+* Multer
+* Cloudinary
 
 ### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+* **Frontend:** Vercel
+* **Backend:** Render
+* **Database:** MongoDB Atlas
+* **File Storage:** Cloudinary
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🏗️ Project Structure
+
+### Frontend
+
+```text
+jobhub-frontend/
+├── public/
+├── src/
+│   ├── components/
+│   ├── context/
+│   ├── pages/
+│   ├── services/
+│   ├── App.jsx
+│   ├── index.js
+│   └── index.css
+├── package.json
+└── README.md
+```
+
+### Backend
+
+```text
+jobhub-backend/
+├── config/
+├── controllers/
+├── middleware/
+├── models/
+├── routes/
+├── utils/
+├── server.js
+├── package.json
+└── README.md
+```
+
+---
+
+## 🔐 Authentication
+
+The application uses **JWT-based authentication**.
+
+Authentication is used to protect:
+
+* Candidate routes
+* Recruiter routes
+* Admin routes
+* Profile operations
+* Job management
+* Application management
+
+---
+
+## 🔄 Application Flow
+
+```text
+Candidate
+    │
+    ├── Register / Login
+    │
+    ├── Create Profile
+    │
+    ├── Upload Resume
+    │
+    ├── Browse Jobs
+    │
+    └── Apply for Job
+              │
+              ▼
+        Job Application
+              │
+              ▼
+          Recruiter
+              │
+              └── Review Applicants
+```
+
+---
+
+## ⚙️ Local Installation
+
+### 1. Clone the frontend
+
+```bash
+git clone https://github.com/sadulakarthikeyreddy/Jobhub-frontend.git
+cd Jobhub-frontend
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Start frontend
+
+```bash
+npm start
+```
+
+The frontend runs on:
+
+```text
+http://localhost:3000
+```
+
+---
+
+### Backend Installation
+
+```bash
+git clone https://github.com/sadulakarthikeyreddy/Jobhub-backend.git
+cd Jobhub-backend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the backend:
+
+```bash
+node server.js
+```
+
+The backend runs locally on:
+
+```text
+http://localhost:5000
+```
+
+---
+
+## 🔑 Environment Variables
+
+The backend requires environment variables for:
+
+```text
+PORT
+MONGO_URI
+JWT_SECRET
+CLOUDINARY_CLOUD_NAME
+CLOUDINARY_API_KEY
+CLOUDINARY_API_SECRET
+```
+
+Create a `.env` file in the backend project.
+
+**Never commit `.env` to GitHub.**
+
+---
+
+## 📡 API
+
+The backend provides APIs for:
+
+* Authentication
+* Users
+* Companies
+* Jobs
+* Applications
+* Admin operations
+* Resume uploads
+
+The deployed backend is available at:
+
+https://jobhub-backend-46sj.onrender.com/
+
+---
+
+## 📱 Responsive Application
+
+The application is designed to work across:
+
+* Desktop
+* Laptop
+* Tablet
+* Mobile
+
+---
+
+## 🎯 Project Goals
+
+JobHub was developed to demonstrate practical full-stack development skills including:
+
+* REST API development
+* Database design
+* Authentication and authorization
+* Role-based access control
+* File uploads
+* Cloud storage
+* Frontend/backend integration
+* Deployment
+* Git and GitHub workflow
+
+---
+
+## 👨‍💻 Developer
+
+**Karthik Reddy**
+
+Full Stack Developer | MERN Stack
+
+### Links
+
+* GitHub: https://github.com/sadulakarthikeyreddy
+* JobHub Live Demo: https://jobhub-frontend-sable.vercel.app/
+
+---
+
+## ⭐ If you find this project useful
+
+Feel free to explore the repository and try the live application.
