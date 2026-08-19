@@ -21,6 +21,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminJobs from "./pages/AdminJob";
 import AdminApplications from "./pages/AdminApplications";
+import AIJobGenerator from "./pages/AIJobGenerator";
 
 function App() {
   return (
@@ -154,6 +155,10 @@ function App() {
     </ProtectedRoute>
   }
 />
+<Route
+  path="/recruiter/ai-job-generator"
+  element={<AIJobGenerator />}
+ />
       </Routes>  
     </BrowserRouter>
   );

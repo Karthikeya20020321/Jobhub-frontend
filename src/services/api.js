@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://jobhub-backend-46sj.onrender.com/api",
+  baseURL:
+    "https://jobhub-backend-46sj.onrender.com/api",
 });
 
 API.interceptors.request.use((config) => {
@@ -15,3 +16,4 @@ API.interceptors.request.use((config) => {
 });
 
 export default API;
+

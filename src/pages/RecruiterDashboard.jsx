@@ -11,7 +11,9 @@ const RecruiterDashboard = () => {
     <div style={styles.page}>
       <div style={styles.container}>
 
-        {/* Welcome Section */}
+        {/* =========================
+            WELCOME / HERO SECTION
+        ========================== */}
         <div style={styles.hero}>
           <div>
             <div style={styles.smallTitle}>
@@ -23,7 +25,7 @@ const RecruiterDashboard = () => {
             </h1>
 
             <p style={styles.welcome}>
-              Welcome back,{" "}
+              Welcome back{" "}
               <strong>
                 {user?.fullName || "Recruiter"}
               </strong>{" "}
@@ -41,7 +43,9 @@ const RecruiterDashboard = () => {
           </div>
         </div>
 
-        {/* Dashboard Cards */}
+        {/* =========================
+            QUICK ACTIONS
+        ========================== */}
         <div style={styles.sectionHeader}>
           <div>
             <h2 style={styles.sectionTitle}>
@@ -49,14 +53,17 @@ const RecruiterDashboard = () => {
             </h2>
 
             <p style={styles.sectionSubtitle}>
-              Choose an action to manage your recruitment activities.
+              Choose an action to manage your recruitment
+              activities.
             </p>
           </div>
         </div>
 
         <div style={styles.grid}>
 
-          {/* Create Company */}
+          {/* =========================
+              CREATE COMPANY
+          ========================== */}
           <button
             onClick={() => navigate("/create-company")}
             style={styles.card}
@@ -84,7 +91,9 @@ const RecruiterDashboard = () => {
             </span>
           </button>
 
-          {/* Create Job */}
+          {/* =========================
+              CREATE JOB
+          ========================== */}
           <button
             onClick={() => navigate("/create-job")}
             style={styles.card}
@@ -103,8 +112,8 @@ const RecruiterDashboard = () => {
             </h3>
 
             <p style={styles.cardText}>
-              Post a new job opportunity and start receiving
-              applications.
+              Post a new job opportunity and start
+              receiving applications.
             </p>
 
             <span
@@ -117,7 +126,46 @@ const RecruiterDashboard = () => {
             </span>
           </button>
 
-          {/* My Companies */}
+          {/* =========================
+              AI JOB GENERATOR
+          ========================== */}
+          <button
+            onClick={() =>
+              navigate("/ai-job-generator")
+            }
+            style={styles.card}
+          >
+            <div
+              style={{
+                ...styles.iconBox,
+                background: "#fef3c7",
+              }}
+            >
+              🤖
+            </div>
+
+            <h3 style={styles.cardTitle}>
+              AI Job Generator
+            </h3>
+
+            <p style={styles.cardText}>
+              Generate professional job descriptions,
+              responsibilities and required skills using AI.
+            </p>
+
+            <span
+              style={{
+                ...styles.cardLink,
+                color: "#d97706",
+              }}
+            >
+              Generate with AI →
+            </span>
+          </button>
+
+          {/* =========================
+              MY COMPANIES
+          ========================== */}
           <button
             onClick={() => navigate("/my-companies")}
             style={styles.card}
@@ -150,7 +198,9 @@ const RecruiterDashboard = () => {
             </span>
           </button>
 
-          {/* My Jobs */}
+          {/* =========================
+              MY JOBS
+          ========================== */}
           <button
             onClick={() => navigate("/my-jobs")}
             style={styles.card}
@@ -185,7 +235,9 @@ const RecruiterDashboard = () => {
 
         </div>
 
-        {/* Bottom Information */}
+        {/* =========================
+            INFORMATION BOX
+        ========================== */}
         <div style={styles.infoBox}>
           <div style={styles.infoIcon}>
             💡
@@ -199,7 +251,9 @@ const RecruiterDashboard = () => {
             <p style={styles.infoText}>
               Create a company profile first, then post
               job opportunities and manage candidates
-              from your dashboard.
+              from your dashboard. You can also use the
+              AI Job Generator to quickly create
+              professional job descriptions.
             </p>
           </div>
         </div>
@@ -208,6 +262,11 @@ const RecruiterDashboard = () => {
     </div>
   );
 };
+
+
+/* =========================
+   STYLES
+========================= */
 
 const styles = {
   page: {
@@ -222,6 +281,8 @@ const styles = {
     maxWidth: "1200px",
     margin: "0 auto",
   },
+
+  /* HERO */
 
   hero: {
     background:
@@ -277,6 +338,8 @@ const styles = {
     flexShrink: "0",
   },
 
+  /* SECTION */
+
   sectionHeader: {
     marginBottom: "20px",
   },
@@ -293,12 +356,16 @@ const styles = {
     fontSize: "14px",
   },
 
+  /* GRID */
+
   grid: {
     display: "grid",
     gridTemplateColumns:
       "repeat(auto-fit, minmax(250px, 1fr))",
     gap: "20px",
   },
+
+  /* CARD */
 
   card: {
     textAlign: "left",
@@ -344,6 +411,8 @@ const styles = {
     fontSize: "14px",
     fontWeight: "700",
   },
+
+  /* INFORMATION BOX */
 
   infoBox: {
     marginTop: "30px",
